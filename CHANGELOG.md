@@ -1,5 +1,10 @@
 # Versiones
 
+## 1.0.3 — 2026-11-02
+
+- Separación explícita entre selector, texto y botón del formulario, con filas independientes.
+- Hoja de estilos versionada para evitar reutilizar estilos anteriores al actualizar.
+
 ## 1.0.2 — 2026-11-02
 
 - Guardado automático y Deshacer permanecen al final de la lista, sin seguir el desplazamiento.
