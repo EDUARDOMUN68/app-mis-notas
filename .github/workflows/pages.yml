@@ -21,10 +21,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Instalar biblioteca de avisos
+        run: npm ci --prefix notifications
       - name: Comprobar datos y sintaxis
         run: |
-          node --test tests/*.test.mjs
+          node --test tests/*.test.mjs notifications/*.test.mjs
           node --check dist/app.mjs
+          node --check dist/app-1.1.0.mjs
+          node --check dist/reminders.mjs
+          node --check notifications/worker.mjs
           node --check dist/edit.mjs
           node --check dist/sw.js
       - uses: actions/configure-pages@v5

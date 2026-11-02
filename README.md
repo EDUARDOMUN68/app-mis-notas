@@ -8,7 +8,17 @@ Cada marca se guarda automáticamente. El botón Añadir incorpora tareas separa
 
 El texto sin añadir se guarda como borrador. Exportar copia descarga la lista y el borrador en JSON. Restaurar copia sustituye la lista tras confirmación y permite deshacer la sustitución de las tareas durante la sesión.
 
-Los datos residen en localStorage del navegador, clave `mis-notas-v1`. No hay sincronización entre dispositivos ni servidor de datos. Borrar los datos del navegador elimina la lista; conservar una copia exportada. Las correcciones automáticas se limitan a unas pocas erratas conocidas; no se interpreta lenguaje natural ni se incluye dictado propio.
+Las notas residen en localStorage del navegador, clave `mis-notas-v1`. No hay sincronización entre dispositivos. Borrar los datos del navegador elimina la lista; conservar una copia exportada. Las correcciones automáticas se limitan a unas pocas erratas conocidas; no se interpreta lenguaje natural ni se incluye dictado propio.
+
+## Recordatorios opcionales
+
+En Fecha y aviso puedes dejar la tarea sin fecha, elegir un día (aviso a las 09:00) o añadir una hora. Se usa la hora del dispositivo al crear el recordatorio y se conserva el instante al exportar. Mantén pulsada una tarea para cambiar o quitar su fecha. Completarla o retirarla cancela el aviso al conectar con el servicio; el receptor también comprueba el estado local para no mostrar tareas completadas.
+
+Abre Avisos del teléfono, pulsa Activar avisos y acepta el permiso. Probar aviso en 1 minuto permite comprobar recepción con la app cerrada. Los avisos requieren conexión; el sistema operativo puede retrasarlos y no sustituyen una alarma exacta. Los errores de programación se muestran sin impedir el guardado local. Tras cambios sin conexión, vuelve a abrir la app con conexión para programarlos.
+
+Servicio independiente en Cloudflare Workers y Durable Objects (`notifications/`), con claves VAPID propias en secretos. El servidor recibe identificadores y horas de las tareas pendientes, suscripción Web Push y revisión del dispositivo, sin el texto ni la categoría. El receptor recupera el texto desde IndexedDB local, comprueba la tarea y evita duplicados. Desactivar avisos borra el registro remoto del dispositivo al conectar. La activación debe hacerse en cada navegador; no viaja en las copias.
+
+Para comprobar el servicio: `npm ci --prefix notifications` y `node --test tests/*.test.mjs notifications/*.test.mjs`. Configurar secretos VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY por un canal privado antes de desplegar con Wrangler. No incluir claves ni suscripciones en el repositorio.
 
 Al cambiar de dirección o dispositivo, usa Exportar copia en el navegador original y Restaurar copia en el destino. El cambio de alojamiento no puede leer automáticamente el almacenamiento de otra dirección.
 

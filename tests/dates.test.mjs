@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {reminderValue,validReminder,serverTasks} from '../dist/dates.mjs';
+import {valid,seed} from '../dist/model.mjs';
+test('Sin fecha no hay aviso; solo día usa nueve de la mañana',()=>{assert.equal(reminderValue(''),null);const r=reminderValue('2027-01-15');assert.equal(new Date(r.at).getHours(),9);assert.equal(new Date(r.at).getMinutes(),0);assert.equal(r.time,'');});
+test('Día y hora se conservan, se rechazan fechas imposibles',()=>{const r=reminderValue('2027-02-25','16:35');assert.equal(new Date(r.at).getHours(),16);assert.equal(new Date(r.at).getMinutes(),35);assert.throws(()=>reminderValue('2027-02-30','10:00'));assert.throws(()=>reminderValue('2027-02-01','25:10'));assert.equal(validReminder({date:'2027-02-25',time:'16:35',at:'no'}),false);});
+test('Exportación compatible con tareas antiguas y nuevas; servidor no recibe textos',()=>{const s=seed(),r=reminderValue('2027-01-10','10:15');s.tasks=[{id:'a',text:'Texto privado',category:'particular',done:false,reminder:r},{id:'b',text:'Sin aviso',category:'trabajo',done:false},{id:'c',text:'Hecha',category:'trabajo',done:true,reminder:r}];assert.ok(valid(s));assert.ok(valid(JSON.parse(JSON.stringify(s))));const tasks=serverTasks(s.tasks,new Date(2027,0,1).getTime());assert.deepEqual(tasks,[{id:'a',at:r.at}]);assert.equal(JSON.stringify(tasks).includes('Texto privado'),false);});

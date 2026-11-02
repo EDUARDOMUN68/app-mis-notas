@@ -1,0 +1,9 @@
+{
+  "name": "mis-notas-recordatorios",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "durable_objects": {"bindings": [{"name":"REMINDERS","class_name":"DeviceReminders"}]},
+  "migrations": [{"tag":"v1","new_sqlite_classes":["DeviceReminders"]}]
+}

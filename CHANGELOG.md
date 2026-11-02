@@ -1,5 +1,12 @@
 # Versiones
 
+## 1.1.0 — 2026-11-02
+
+- Día y hora opcionales al añadir o editar tareas; solo día usa las 09:00.
+- Activación por teléfono, prueba diferida y desactivación de avisos.
+- Servicio de programación independiente en Cloudflare y receptor con la app cerrada, sin enviar textos de tareas al servidor.
+- Recordatorios incluidos en copias; compatibilidad con listas y copias anteriores.
+
 ## 1.0.5 — 2026-11-02
 
 - Edición al mantener pulsada una tarea, con Guardar y Cancelar. Conserva categoría y marca y permite Deshacer.
