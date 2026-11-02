@@ -1,0 +1,14 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {KEY,seed as emptySeed,valid,read,save,parse} from '../dist/model.mjs';
+const seed=()=>({...emptySeed(),tasks:Array.from({length:7},(_,i)=>({id:'test-'+i,text:'Tarea '+(i+1),category:'particular',done:false}))});
+const storage=()=>{const m=new Map([[KEY,JSON.stringify(seed())]]);return {getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v)};};
+test('Compras separadas, categoría expresa e identificadores diferentes',()=>{const tasks=parse('Leche, agua, limones\nTrabajo: preparar contrato; revisar informe');assert.equal(tasks.length,5);assert.deepEqual(tasks.map(t=>t.category),['particular','particular','particular','trabajo','trabajo']);assert.equal(new Set(tasks.map(t=>t.id)).size,5);assert.notEqual(parse('Leche, Leche')[0].id,parse('Leche, Leche')[1].id);});
+test('Marcas y texto de borrador sobreviven a otra lectura; completadas permanecen',()=>{const s=storage();const base=read(s);const tasks=structuredClone(base.tasks);tasks[0].done=true;tasks[1].done=true;const next=save(s,{revision:1,tasks,composer:{text:'Texto sin añadir',category:'trabajo'}},base);assert.deepEqual(read(s),next);assert.equal(read(s).tasks.filter(t=>t.done).length,2);assert.equal(read(s).tasks.length,7);assert.equal(read(s).composer.text,'Texto sin añadir');});
+test('Retirar completadas conserva pendientes y permite restaurar el conjunto anterior',()=>{const s=storage();let base=seed();base.tasks[0].done=true;s.setItem(KEY,JSON.stringify(base));const previous=structuredClone(base.tasks);let next=save(s,{...base,revision:1,tasks:base.tasks.filter(t=>!t.done)},base);assert.equal(read(s).tasks.length,6);next=save(s,{...next,revision:2,tasks:previous},next);assert.deepEqual(read(s).tasks,previous);});
+test('Fallo de almacenamiento conserva último estado confirmado',()=>{const s=storage();const base=seed();s.setItem(KEY,JSON.stringify(base));s.setItem=()=>{throw Error('Sin espacio');};assert.throws(()=>save(s,{...base,revision:1,tasks:[]},base),/Sin espacio/);assert.deepEqual(read(s),base);});
+test('Revisión antigua no sobrescribe cambios de otra pestaña',()=>{const s=storage();const base=read(s);save(s,{...base,revision:1,tasks:[]},base);assert.throws(()=>save(s,{...base,revision:1},base),/otra pestaña/);assert.equal(read(s).tasks.length,0);});
+test('Datos dañados se rechazan sin sobrescribir',()=>{const s=storage();s.setItem(KEY,'datos dañados');assert.throws(()=>read(s));assert.equal(s.getItem(KEY),'datos dañados');const invalid=seed();invalid.tasks[1].id=invalid.tasks[0].id;assert.equal(valid(invalid),false);});
+test('Guardado no verificable y copia inválida se rechazan',()=>{const s={getItem:()=>null,setItem:()=>{}};assert.throws(()=>save(s,{...emptySeed(),revision:1},emptySeed()),/verificar/);assert.equal(valid({revision:0,tasks:[]}),undefined);});
+
+test('Primera apertura pública sin datos personales',()=>assert.deepEqual(emptySeed().tasks,[]));
