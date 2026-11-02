@@ -1,5 +1,10 @@
 # Versiones
 
+## 1.0.2 — 2026-11-02
+
+- Guardado automático y Deshacer permanecen al final de la lista, sin seguir el desplazamiento.
+- Selector Sección antes del campo de texto y campo vacío sin ejemplo de compras.
+
 ## 1.0.1 — 2026-11-02
 
 - Publicación en GitHub Pages con acceso directo sin cuentas.
