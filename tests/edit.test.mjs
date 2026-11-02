@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {bindTaskEditor} from '../dist/edit.mjs';
+const event=(name,extra={})=>Object.assign(new Event(name,{cancelable:true}),{isPrimary:true,button:0,clientX:20,clientY:20,...extra});
+test('Una pulsación larga abre editor y no marca mediante el clic posterior',async()=>{const row=new EventTarget(),task={id:'test',text:'Tarea',done:false,category:'trabajo'};let opened;bindTaskEditor(row,task,t=>{opened=t;});row.dispatchEvent(event('pointerdown'));await new Promise(r=>setTimeout(r,650));assert.equal(opened,task);row.dispatchEvent(event('pointerup'));const click=event('click');row.dispatchEvent(click);assert.equal(click.defaultPrevented,true);assert.equal(task.done,false);});
+test('Desplazarse cancela la pulsación y un toque corto conserva el clic normal',async()=>{const row=new EventTarget();let opened=0;bindTaskEditor(row,{},()=>opened++);row.dispatchEvent(event('pointerdown'));row.dispatchEvent(event('pointermove',{clientY:80}));await new Promise(r=>setTimeout(r,650));assert.equal(opened,0);row.dispatchEvent(event('pointerdown'));row.dispatchEvent(event('pointerup'));const click=event('click');row.dispatchEvent(click);assert.equal(click.defaultPrevented,false);});
+test('F2 permite editar con teclado',()=>{const row=new EventTarget();let opened=0;bindTaskEditor(row,{},()=>opened++);row.dispatchEvent(event('keydown',{key:'F2'}));assert.equal(opened,1);});

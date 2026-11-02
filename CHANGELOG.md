@@ -1,5 +1,10 @@
 # Versiones
 
+## 1.0.5 — 2026-11-02
+
+- Edición al mantener pulsada una tarea, con Guardar y Cancelar. Conserva categoría y marca y permite Deshacer.
+- Desplazar la lista cancela la pulsación larga; un toque normal sigue marcando. También admite clic derecho y F2.
+
 ## 1.0.4 — 2026-11-02
 
 - Campo de nuevas tareas con alto inicial de 46px, igual al selector de sección, manteniendo ampliación vertical manual.

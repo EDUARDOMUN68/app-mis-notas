@@ -22,7 +22,9 @@ Servir `dist` por HTTP para desarrollo o HTTPS para instalación. No necesita co
 
 ```
 python -m http.server 8765 --directory dist
-node --test tests/model.test.mjs
+node --test tests/*.test.mjs
 ```
 
 Manifiesto standalone, iconos PNG 192/512 y service worker para acceso sin conexión tras la primera carga. El botón Instalar app aparece cuando Chrome ofrece la instalación. La instalación debe comprobarse en el dispositivo.
+
+Mantén pulsada una tarea para editar su texto; Guardar conserva su sección y marca, y Cancelar deja la tarea intacta. También puedes usar clic derecho o F2 con el foco en su casilla. Un toque normal marca o desmarca; desplazar la lista cancela la pulsación larga.
