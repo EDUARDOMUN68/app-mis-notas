@@ -1,5 +1,9 @@
 # Versiones
 
+## 1.0.4 — 2026-11-02
+
+- Campo de nuevas tareas con alto inicial de 46px, igual al selector de sección, manteniendo ampliación vertical manual.
+
 ## 1.0.3 — 2026-11-02
 
 - Separación explícita entre selector, texto y botón del formulario, con filas independientes.
